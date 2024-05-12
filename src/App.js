@@ -6,15 +6,15 @@ function App() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const response = await fetch('/api/describe', {
+    const response = await fetch('/api/DescribeImage', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ url }),
     });
-    const data = await response.json();
-    setDescription(data.description);
+    const data = await response.text(); // Change this line
+    setDescription(data); // Change this line
   };
 
   return (
