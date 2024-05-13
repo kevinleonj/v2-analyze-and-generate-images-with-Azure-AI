@@ -14,7 +14,10 @@ module.exports = async function (context, req) {
 
     const endpointSecretName = "ComputerVisionChallengeSecret";
     const endpoint = await client.getSecret(endpointSecretName);
-
+    console.log(`API Key: ${apiKey.value}`);
+    console.log(`Endpoint: ${endpoint.value}`);
+    console.log(`Request Body: ${JSON.stringify(req.body)}`);
+    
     const imageUrl = req.body && req.body.url;
     if (imageUrl) {
         try {
@@ -33,9 +36,10 @@ module.exports = async function (context, req) {
                 body: response.data.description.captions[0].text
             };
         } catch (error) {
+            console.error(error);
             context.res = {
                 status: 500,
-                body: `Error: ${error.message}`
+                body: "An error occurred. Check the function logs for details."
             };
         }
     }
