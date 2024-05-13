@@ -17,20 +17,27 @@ module.exports = async function (context, req) {
 
     const imageUrl = req.body && req.body.url;
     if (imageUrl) {
-        const response = await axios.post(`${endpoint.value}/computervision/imageanalysis:analyze?api-version=2024-02-01&features=caption&model-version=latest&language=en&gender-neutral-caption=False`, 
-            { url: imageUrl },
-            {
-                headers: {
-                    'Ocp-Apim-Subscription-Key': apiKey.value,
-                    'Content-Type': 'application/json'
+        try {
+            const response = await axios.post(`${endpoint.value}/computervision/imageanalysis:analyze?api-version=2024-02-01&features=caption&model-version=latest&language=en&gender-neutral-caption=False`, 
+                { url: imageUrl },
+                {
+                    headers: {
+                        'Ocp-Apim-Subscription-Key': apiKey.value,
+                        'Content-Type': 'application/json'
+                    }
                 }
-            }
-        );
+            );
 
-        context.res = {
-            // status: 200, /* Defaults to 200 */
-            body: response.data.description.captions[0].text
-        };
+            context.res = {
+                // status: 200, /* Defaults to 200 */
+                body: response.data.description.captions[0].text
+            };
+        } catch (error) {
+            context.res = {
+                status: 500,
+                body: `Error: ${error.message}`
+            };
+        }
     }
     else {
         context.res = {
@@ -38,5 +45,4 @@ module.exports = async function (context, req) {
             body: "Please pass a url in the request body"
         };
     }
-    console.log(response.data);
 };
