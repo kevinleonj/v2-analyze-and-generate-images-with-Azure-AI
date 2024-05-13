@@ -3,17 +3,16 @@ const { DefaultAzureCredential } = require('@azure/identity');
 const { SecretClient } = require('@azure/keyvault-secrets');
 
 module.exports = async function (context, req) {
-    const vaultName = process.env['KEY_VAULT_NAME'];
-    const kvUri = `https://${vaultName}.vault.azure.net`;
-
     const credential = new DefaultAzureCredential();
-    const client = new SecretClient(kvUri, credential);
 
-    const apiKeySecretName = "ComputerVisionChallengeLink";
-    const apiKey = await client.getSecret(apiKeySecretName);
+    const apiKeySecretUri = process.env['API_KEY_SECRET_URI']; // Replace with your environment variable
+    const clientKey = new SecretClient(apiKeySecretUri, credential);
+    const apiKey = await clientKey.getSecret(apiKeySecretUri);
 
-    const endpointSecretName = "ComputerVisionChallengeSecret";
-    const endpoint = await client.getSecret(endpointSecretName);
+    const endpointSecretUri = process.env['ENDPOINT_SECRET_URI']; // Replace with your environment variable
+    const clientEndpoint = new SecretClient(endpointSecretUri, credential);
+    const endpoint = await clientEndpoint.getSecret(endpointSecretUri);
+
     console.log(`API Key: ${apiKey.value}`);
     console.log(`Endpoint: ${endpoint.value}`);
     console.log(`Request Body: ${JSON.stringify(req.body)}`);
