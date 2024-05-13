@@ -38,4 +38,5 @@ module.exports = async function (context, req) {
             body: "Please pass a url in the request body"
         };
     }
+    console.log(response.data);
 };
